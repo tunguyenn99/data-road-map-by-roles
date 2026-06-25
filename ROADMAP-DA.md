@@ -11,7 +11,7 @@ Roadmap dành cho thành viên mới hoặc đang ở vị trí Data Analyst . M
 | Aspect | Mô tả |
 |--------|--------|
 | **Mission** | Biến dữ liệu thô thành insight actionable cho business |
-| **Collaborate with** | Business teams (Tín dụng, Tài chính, Vận hành), BI Engineer, AE |
+| **Collaborate with** | Business teams (Sales, Marketing, Finance, Operations...), BI Engineer, AE |
 | **Output** | Reports, ad-hoc analysis, data exploration, business requirements |
 | **Tools** | SQL (Redshift), Excel, Python (pandas), DBeaver |
 
@@ -37,11 +37,11 @@ Roadmap dành cho thành viên mới hoặc đang ở vị trí Data Analyst . M
 
 | # | Bài tập | Domain |
 |---|---------|--------|
-| 1 | Tính số dư trung bình 30 ngày gần nhất per khách hàng | Finance |
-| 2 | Rank chi nhánh theo doanh số tháng (window function) | Sales |
-| 3 | Tìm khách hàng có giao dịch bất thường (> 3 std dev) | Risk |
-| 4 | Pivot report: doanh số theo tháng × sản phẩm | Credit |
-| 5 | Running total & month-over-month growth | Finance |
+| 1 | Tính số dư hoặc doanh thu trung bình 30 ngày gần nhất per khách hàng | Finance / Sales |
+| 2 | Rank chi nhánh hoặc dòng sản phẩm theo doanh số tháng (window function) | Sales / Retail |
+| 3 | Tìm khách hàng có giao dịch hoặc hành vi bất thường (> 3 std dev) | Risk / Fraud |
+| 4 | Pivot report: doanh thu theo tháng × danh mục sản phẩm | E-commerce / Sales |
+| 5 | Tính retention rate hoặc month-over-month growth | Finance / Growth / SaaS |
 
 ### Deliverables
 
@@ -83,7 +83,7 @@ WHERE tf_partition_date = '{{ business_date }}';
 
 ### Deliverables
 
-- [ ] Profile 5 source tables (T24, EOZ), document findings
+- [ ] Profile 5 source tables từ các hệ thống nghiệp vụ (CRM, ERP, E-commerce DB, Core DB...), document findings
 - [ ] Tạo data dictionary cho 1 domain (columns, types, business meaning)
 - [ ] Identify data quality issues và report cho team
 - [ ] Hiểu data flow: source → staging → golden → curated
@@ -92,34 +92,54 @@ WHERE tf_partition_date = '{{ business_date }}';
 
 ## Phase 3: Business Domain Knowledge (Tuần 9-12)
 
-**Mục tiêu:** Hiểu nghiệp vụ ngân hàng đủ sâu để tự dịch yêu cầu business → SQL.
+**Mục tiêu:** Hiểu nghiệp vụ đủ sâu để tự dịch yêu cầu business → SQL.
 
-### Enterprise Domains 
+### Enterprise Domains
 
-| Domain | Entities chính | Bảng quan trọng |
-|--------|---------------|-----------------|
-| **Credit (Tín dụng)** | Khoản vay, hạn mức, lãi suất, nợ xấu | stg_t24_loan_*, cst_credit_* |
-| **Customer** | CIF, KYC, segment, demographics | stg_t24_customer*, cst_t24_cust_prfl* |
-| **Transaction** | Giao dịch, chuyển khoản, thanh toán | stg_t24_txn_*, ev_transaction_* |
-| **Finance** | Bảng cân đối, P&L, chi phí | stg_t24_acct_*, cst_finance_* |
-| **Operations** | Chi nhánh, nhân viên, KPI nội bộ | stg_hr_*, stg_branch_* |
+Một Data Analyst cần hiểu rõ dữ liệu của domain mình đang phân tích. Dưới đây là các thực thể chính của 3 domains phổ biến:
 
-### Thuật ngữ cần biết
+#### 1. E-commerce / Retail
+| Domain Area | Entities chính | Bảng quan trọng ví dụ |
+|-------------|---------------|-----------------------|
+| **Sales & Orders** | Đơn hàng, sản phẩm, giỏ hàng, thanh toán | `stg_orders`, `stg_order_items` |
+| **Customer** | Khách hàng, phân khúc, địa chỉ, lịch sử mua | `dim_users`, `dim_customers` |
+| **Inventory** | Kho hàng, tồn kho, nhà cung cấp, vận chuyển | `stg_inventory`, `stg_shipping` |
+| **Marketing** | Chiến dịch, click, coupon, chi phí quảng cáo | `stg_campaigns`, `stg_ad_spend` |
 
-| Thuật ngữ | Ý nghĩa | Ví dụ |
-|-----------|----------|-------|
-| CIF | Customer Information File — mã KH duy nhất | CIF001234 |
-| NPL | Non-Performing Loan — nợ xấu (nhóm 3-5) | NPL ratio = 2.5% |
-| LTV | Loan to Value — tỷ lệ vay/tài sản đảm bảo | LTV 70% |
-| CASA | Current Account Savings Account | CASA ratio = 15% |
-| NIM | Net Interest Margin | NIM = 3.2% |
-| CAR | Capital Adequacy Ratio | CAR = 9% |
+#### 2. SaaS / Subscription
+| Domain Area | Entities chính | Bảng quan trọng ví dụ |
+|-------------|---------------|-----------------------|
+| **Subscription** | Gói dịch vụ, chu kỳ, trạng thái (active/churn) | `stg_subscriptions`, `stg_invoices` |
+| **Product Usage** | Session, event, tính năng sử dụng, thời lượng | `stg_user_events`, `stg_sessions` |
+| **Customer Success**| Ticket hỗ trợ, điểm CSAT/NPS, phản hồi | `stg_support_tickets`, `stg_nps` |
+
+#### 3. Banking & Fintech
+| Domain Area | Entities chính | Bảng quan trọng ví dụ |
+|-------------|---------------|-----------------------|
+| **Credit (Tín dụng)**| Khoản vay, hạn mức, lãi suất, nợ xấu | `stg_loans`, `stg_credit_limits` |
+| **Customer** | CIF (Customer Info File), KYC, segment | `dim_customers`, `dim_customer_profiles`|
+| **Transaction** | Giao dịch, chuyển khoản, thanh toán, ATM/POS | `stg_transactions`, `stg_trans_logs` |
+| **Finance** | Tài khoản, số dư, bảng cân đối, P&L | `stg_accounts`, `stg_gl_balances` |
+
+### Thuật ngữ cần biết (Business Glossary)
+
+| Lĩnh vực | Thuật ngữ | Ý nghĩa | Ví dụ |
+|----------|-----------|----------|-------|
+| **Chung / SaaS** | **LTV** | Lifetime Value — Giá trị vòng đời khách hàng | LTV = 150 USD |
+| | **CAC** | Customer Acquisition Cost — Chi phí thu hút KH | CAC = 30 USD |
+| | **Churn Rate** | Tỷ lệ khách hàng dừng dịch vụ / rời bỏ | Churn Rate = 5% / tháng |
+| **E-commerce** | **AOV** | Average Order Value — Giá trị đơn hàng trung bình | AOV = 250,000 VND |
+| | **GMV** | Gross Merchandise Value — Tổng giá trị giao dịch | GMV = 2 tỷ / tháng |
+| | **CR (Conversion)**| Conversion Rate — Tỷ lệ chuyển đổi mua hàng | CR = 2.5% |
+| **Banking / Fintech** | **CIF / KYC** | Customer Info File / Know Your Customer | Mã CIF001234 |
+| | **NPL** | Non-Performing Loan — Tỷ lệ nợ xấu (nhóm 3-5) | NPL ratio = 1.8% |
+| | **CASA** | Current Account Savings Account — Tiền gửi không kỳ hạn| CASA ratio = 25% |
 
 ### Deliverables
 
-- [ ] Hiểu business flow cho 2 domains (Credit + Customer)
+- [ ] Hiểu business flow cho 2 domains chính của doanh nghiệp
 - [ ] Tự viết query cho 5 yêu cầu business thực tế (không cần hỏi lại)
-- [ ] Tạo glossary 30+ thuật ngữ banking cho team
+- [ ] Tạo glossary 30+ thuật ngữ business đặc trưng của domain công ty đang làm việc
 - [ ] Shadow 1 buổi meeting với business team, ghi lại requirements
 
 ---
@@ -298,7 +318,8 @@ Tuần 21-24:  Advanced & Specialization
 - [The Pyramid Principle (Barbara Minto)](https://www.amazon.com/Pyramid-Principle-Logic-Writing-Thinking/) — structured thinking
 - [Measure What Matters (John Doerr)](https://www.whatmatters.com/) — KPI thinking
 
-### Banking Domain
-- [Banking 101 (Investopedia)](https://www.investopedia.com/banking-4427797)
-- T24 documentation (internal)
-- Company business glossary (internal Confluence)
+### Domain Knowledge Resources
+- [E-commerce & Retail Metrics (Klipfolio)](https://www.klipfolio.com/resources/kpi-examples/ecommerce)
+- [SaaS Metrics 2.0 (David Skok)](https://www.forentrepreneurs.com/saas-metrics-2/)
+- [Banking & Fintech 101 (Investopedia)](https://www.investopedia.com/banking-4427797)
+- Company business glossary & internal wiki (Confluence)

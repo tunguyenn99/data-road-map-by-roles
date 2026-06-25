@@ -19,7 +19,7 @@ Roadmap phát triển career path cho team Data, định hướng từ vai trò 
 | Excel / Google Sheets | Pivot, VLOOKUP, Power Query | ⭐⭐⭐ |
 | Statistics cơ bản | Descriptive stats, correlation | ⭐⭐⭐ |
 | Python cho analysis | pandas, numpy, matplotlib | ⭐⭐⭐ |
-| Business domain | Banking operations, lending, risk | ⭐⭐⭐ |
+| Business domain | E-commerce, SaaS, or Banking operations | ⭐⭐⭐ |
 
 ### Deliverables
 
@@ -48,7 +48,7 @@ Roadmap phát triển career path cho team Data, định hướng từ vai trò 
 ### Deliverables
 
 - [ ] Design + deploy 3+ production dashboards
-- [ ] Dimensional model cho 1 business domain (customer, lending, transaction)
+- [ ] Dimensional model cho 1 business domain (ví dụ: orders/customers trong E-commerce, subscriptions trong SaaS, hoặc transactions/lending trong Fintech)
 - [ ] Self-service data catalog / metrics layer
 - [ ] KPI documentation cho business teams
 - [ ] Dashboard performance optimization (< 5s load time)
@@ -105,7 +105,7 @@ Roadmap phát triển career path cho team Data, định hướng từ vai trò 
 | Environment | Mục đích | Ai dùng | Data |
 |-------------|----------|---------|------|
 | **LOCAL** | Dev cá nhân, chạy dbt compile/test | Developer | Kết nối SIT Redshift |
-| **SIT** (System Integration Testing) | Dev chung, test features mới | DE/AE team | Data thật từ T24 (subset hoặc full) |
+| **SIT** (System Integration Testing) | Dev chung, test features mới | DE/AE team | Data thật từ core/source systems (subset hoặc full) |
 | **UAT** (User Acceptance Testing) | Mirror PROD, dùng cho `--defer` | Tester + BA | Data sync từ PROD |
 | **PROD** (Production) | Live, phục vụ BI/business | Airflow automated | Data nghiệp vụ thật |
 
@@ -156,18 +156,18 @@ Roadmap phát triển career path cho team Data, định hướng từ vai trò 
 
 | Env var | SIT | UAT | PROD |
 |---------|-----|-----|------|
-| `DB_HOST` | `dih-redshift-sit...` | `dih-redshift-uat...` | `dih-redshift-prod...` |
-| `DB_USER` | `dbadmin` | `dbadmin_uat` | `airflow_ead` |
+| `DB_HOST` | `redshift-sit...` | `redshift-uat...` | `redshift-prod...` |
+| `DB_USER` | `dbadmin` | `dbadmin_uat` | `airflow_dwh` |
 | `DBT_TARGET` | `sit` | `uat` | `prod` |
-| Redshift schemas | Shared (`aws_gpb_bankwide`) | Shared | Shared |
-| Data freshness | Daily T24 sync | Mirror PROD | Real-time T24 |
+| Redshift schemas | Shared (`analytics_shared`) | Shared | Shared |
+| Data freshness | Daily source sync | Mirror PROD | Real-time source sync |
 
 #### Áp dụng cho từng repo
 
 | Repo | Branch chính | Deploy trigger |
 |------|-------------|----------------|
-| `ead-cloud-airflow-dbt` | `sit` → `uat` → `master` | Merge vào `sit` → dbt run on SIT |
-| `ead-cloud-redshift-rbac` | `sit` | Merge vào `sit` → RBAC deploy on SIT |
+| `dwh-airflow-dbt` | `sit` → `uat` → `master` | Merge vào `sit` → dbt run on SIT |
+| `dwh-redshift-rbac` | `sit` | Merge vào `sit` → RBAC deploy on SIT |
 
 ---
 

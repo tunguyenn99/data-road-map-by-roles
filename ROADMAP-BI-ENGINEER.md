@@ -80,17 +80,17 @@ Roadmap dành cho thành viên đã có nền tảng DA (SQL vững, hiểu busi
 
 | Concept | Mô tả | Ví dụ |
 |---------|--------|-------------|
-| Fact table | Bảng chứa events/metrics (số đo) | fact_transaction, fact_loan_disbursement |
-| Dimension table | Bảng mô tả (thuộc tính) | dim_customer, dim_branch, dim_product |
-| Star schema | 1 fact + N dimensions | fact_txn → dim_customer, dim_branch, dim_date |
-| Snowflake | Dimension normalized thêm | dim_branch → dim_region → dim_area |
+| Fact table | Bảng chứa events/metrics (số đo) | fact_orders, fact_subscriptions, fact_transactions |
+| Dimension table | Bảng mô tả (thuộc tính) | dim_customer, dim_product, dim_users |
+| Star schema | 1 fact + N dimensions | fact_orders → dim_customer, dim_store, dim_date |
+| Snowflake | Dimension normalized thêm | dim_product → dim_category → dim_department |
 | SCD Type 1 | Overwrite (không giữ history) | dim_customer.phone (update mới nhất) |
 | SCD Type 2 | Giữ history (effective_from/to) | dim_customer_history (track thay đổi segment) |
-| Degenerate dim | Dimension nằm trong fact | transaction_id trong fact_txn |
+| Degenerate dim | Dimension nằm trong fact | order_id trong fact_orders |
 | Junk dimension | Gộp flags/indicators nhỏ | dim_flags (is_vip, is_staff, is_active) |
-| Aggregate table | Pre-computed summaries | agg_daily_branch_revenue |
+| Aggregate table | Pre-computed summaries | agg_daily_store_revenue |
 
-### Star Schema Example
+### Star Schema Example (Ví dụ Star Schema E-commerce)
 
 ```
                     ┌──────────────┐
@@ -102,14 +102,14 @@ Roadmap dành cho thành viên đã có nền tảng DA (SQL vững, hiểu busi
                     └──────┬───────┘
                            │
 ┌──────────────┐    ┌──────▼────────────┐    ┌──────────────┐
-│ dim_customer │────│  fact_transaction │────│ dim_branch   │
-│ ├─ cif       │    │  ├─ txn_id        │    │ ├─ branch_id │
-│ ├─ name      │    │  ├─ customer_key  │    │ ├─ name      │
-│ ├─ segment   │    │  ├─ branch_key    │    │ ├─ region    │
-│ └─ tier      │    │  ├─ product_key   │    │ └─ area      │
+│ dim_customer │────│  fact_orders      │────│ dim_store    │
+│ ├─ customer_key│  │  ├─ order_id      │    │ ├─ store_id  │
+│ ├─ name      │    │  ├─ customer_key  │    │ ├─ store_name│
+│ ├─ segment   │    │  ├─ store_key     │    │ ├─ region    │
+│ └─ tier      │    │  ├─ product_key   │    │ └─ city      │
 └──────────────┘    │  ├─ amount        │    └──────────────┘
-                    │  ├─ txn_type      │
-┌──────────────┐    │  └─ txn_date_key  │
+                    │  ├─ order_status  │
+┌──────────────┐    │  └─ order_date_key│
 │ dim_product  │────└───────────────────┘
 │ ├─ product_id│
 │ ├─ category  │
@@ -121,13 +121,13 @@ Roadmap dành cho thành viên đã có nền tảng DA (SQL vững, hiểu busi
 
 | Layer | Vai trò trong BI |
 |-------|-----------------|
-| `ead_staging` (stg_) | Raw data cleaned — không dùng trực tiếp cho BI |
-| `ead_golden` (cst_, ev_) | Business logic applied — source cho dimensions |
-| `ead_curated` (cur_) | **BI-ready** — star schema, aggregates, KPI tables |
+| `staging` (stg_) | Raw data cleaned — không dùng trực tiếp cho BI |
+| `golden` (cst_, ev_) | Business logic applied — source cho dimensions |
+| `curated` (cur_) | **BI-ready** — star schema, aggregates, KPI tables |
 
 ### Deliverables
 
-- [ ] Thiết kế star schema cho 1 business domain (Credit hoặc Customer)
+- [ ] Thiết kế star schema cho 1 business domain (ví dụ: E-commerce Orders, SaaS Subscriptions, hoặc Fintech Lending)
 - [ ] Implement SCD Type 2 cho ít nhất 1 dimension
 - [ ] Tạo 2+ aggregate tables cho dashboard performance
 - [ ] Document data model (ERD diagram + column descriptions)
@@ -237,24 +237,41 @@ Roadmap dành cho thành viên đã có nền tảng DA (SQL vững, hiểu busi
 |------|--------|----|
 ```
 
-### KPIs Banking cần có
+### KPIs theo Business Domains phổ biến
 
-| Domain | KPI | Formula |
-|--------|-----|---------|
-| Credit | NPL Ratio | Nợ xấu (nhóm 3-5) / Tổng dư nợ |
-| Credit | Disbursement Volume | SUM(amount) WHERE type = 'disbursement' |
-| Customer | Active Rate | Active customers / Total customers |
-| Customer | CASA Ratio | (CASA balance / Total deposits) × 100 |
-| Finance | NIM | (Interest income - Interest expense) / Avg earning assets |
-| Finance | CIR | Operating expense / Operating income |
-| Operations | Branch Productivity | Revenue per branch per month |
+Dưới đây là một số KPIs cốt lõi của các mô hình kinh doanh chính mà một BI Engineer cần nắm vững để thiết kế dashboards phù hợp:
+
+#### 1. E-commerce & Retail (Thương mại điện tử & Bán lẻ)
+| Domain Area | KPI | Công thức / Định nghĩa | Ý nghĩa |
+|-------------|-----|-------------------------|---------|
+| Sales | GMV | `SUM(order_amount)` | Tổng giá trị giao dịch trong kỳ (chưa trừ hủy/hoàn) |
+| Sales | AOV (Average Order Value)| `GMV / Total Orders` | Giá trị trung bình của mỗi đơn hàng |
+| Conversion | CR (Conversion Rate) | `Purchasing Users / Total Visitors` | Tỷ lệ chuyển đổi khách ghé thăm thành người mua hàng |
+| Customer | Cohort Retention Rate | `Active Cohort Users in Month N / Initial Cohort Users` | Tỷ lệ giữ chân khách hàng qua từng tháng |
+
+#### 2. SaaS & Subscription (Phần mềm dịch vụ)
+| Domain Area | KPI | Công thức / Định nghĩa | Ý nghĩa |
+|-------------|-----|-------------------------|---------|
+| Revenue | MRR / ARR | `SUM(active_subscription_value)` | Doanh thu định kỳ hàng tháng / hàng năm |
+| Growth | CAC (Customer Acquisition Cost)| `Total Marketing Spend / New Customers` | Chi phí để có được 1 khách hàng mới |
+| Unit Econ | LTV / CAC Ratio | `LTV / CAC` | Đo lường hiệu quả kinh tế trên mỗi khách hàng (đẹp nhất > 3) |
+| Retention | Logo Churn Rate | `Cancelled Accounts / Active Accounts at Start` | Tỷ lệ tài khoản dừng/hủy gói dịch vụ |
+
+#### 3. Banking & Fintech (Ngân hàng & Công nghệ tài chính)
+| Domain Area | KPI | Công thức / Định nghĩa | Ý nghĩa |
+|-------------|-----|-------------------------|---------|
+| Credit | NPL Ratio (Tỷ lệ nợ xấu)| `Nợ xấu (nhóm 3-5) / Tổng dư nợ` | Đo lường chất lượng danh mục và rủi ro tín dụng |
+| Credit | Disbursement Volume | `SUM(disbursed_amount)` | Tổng quy mô giải ngân trong kỳ |
+| Customer | CASA Ratio | `(CASA Balance / Total Deposits) * 100` | Tỷ lệ tiền gửi không kỳ hạn (nguồn vốn rẻ) |
+| Finance | NIM (Net Interest Margin)| `(Interest Income - Interest Expense) / Avg Earning Assets` | Biên thu nhập lãi thuần |
+| Finance | CIR (Cost to Income Ratio)| `Operating Expense / Operating Income` | Hiệu quả vận hành (càng thấp càng tốt) |
 
 ### Deliverables
 
-- [ ] KPI catalog document (20+ KPIs across 3 domains)
-- [ ] Implement metrics layer trong dbt (metrics / curated models)
+- [ ] KPI catalog document (20+ KPIs across 3 domains hoặc sâu vào domain chính của công ty)
+- [ ] Implement metrics/semantic layer trong BI tool hoặc dbt (metrics / curated models)
 - [ ] Mỗi KPI có: definition, formula, owner, source, caveats
-- [ ] Training session cho business: "cách đọc dashboard"
+- [ ] Training session cho business: "cách đọc dashboard & phân tích số liệu"
 - [ ] Feedback loop: business validate KPI definitions
 
 ---
@@ -310,7 +327,7 @@ Level 4: Build dashboards (BI team)
 | Aspect | Policy |
 |--------|--------|
 | **Creation** | MR review trước publish. Data source phải từ curated layer |
-| **Naming** | `[Domain] - [Subject] - [Audience]` (VD: "Credit - NPL Monitor - Risk Team") |
+| **Naming** | `[Domain] - [Subject] - [Audience]` (VD: "Sales - Monthly Revenue - Executive Team") |
 | **Ownership** | Mỗi dashboard có owner + backup owner |
 | **Review cadence** | Quarterly review: còn dùng? data đúng? performance OK? |
 | **Retirement** | > 30 ngày không ai xem → notify owner → archive sau 2 tuần |
