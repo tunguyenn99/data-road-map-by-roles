@@ -1,65 +1,126 @@
-# Lộ trình Phát triển Sự nghiệp ngành Data theo Vai trò (Data Career Roadmaps by Roles)
+# 🗺️ Data Career Roadmaps — Mục lục
 
-Chào mừng bạn đến với kho lưu trữ **Data Career Roadmaps**. Đây là bộ cẩm nang chi tiết, lộ trình học tập và làm việc được thiết kế nhằm hỗ trợ các thành viên trong đội ngũ Data định hướng, nâng cao năng lực và phát triển sự nghiệp theo từng vai trò chuyên biệt.
+> *Nếu bạn đang đọc trang này, có thể bạn đang ở một trong những ngã rẽ sau: vừa tốt nghiệp và tự hỏi "data career bắt đầu từ đâu?", đang làm DA nhưng muốn growth mạnh hơn, hoặc đang ở ngành khác mà nghe nói "data is the new oil" quá nhiều lần. Dù bạn ở đâu — bạn đến đúng chỗ rồi. Bộ roadmaps này không phải lý thuyết suông — mà là bản đồ thực tế, viết từ góc nhìn của người đã đi qua và đang đi cùng bạn.*
 
----
+## Tổng quan
 
-## 🗺️ Bản đồ các Lộ trình (Roadmaps Overview)
+Bộ 6 Career Roadmaps cho các vai trò trong Data team, thiết kế với 5 levels:
+**Intern → Fresher → Junior → Mid → Senior**
 
-Repository này cung cấp 3 lộ trình chi tiết tương ứng với các cột mốc sự nghiệp khác nhau:
-
-### 1. [Data Analyst (DA)](./ROADMAP-DA.md)
-* **Đối tượng:** Thành viên mới bắt đầu hoặc đang làm việc ở vị trí Data Analyst muốn củng cố nền tảng để tự chủ hoàn toàn trong việc giải quyết yêu cầu từ business.
-* **Thời gian:** 6 tháng (từ Junior lên Mid/Senior DA).
-* **Nội dung trọng tâm:**
-  * **Phase 1 (Tuần 1-4):** SQL Foundation (CTEs, Window Functions, Window Frame).
-  * **Phase 2 (Tuần 5-8):** Data Exploration & Profiling (Khám phá Schema, kiểm soát chất lượng dữ liệu).
-  * **Phase 3 (Tuần 9-12):** Business Domain Knowledge (E-commerce, SaaS, Banking & Fintech).
-  * **Phase 4 (Tuần 13-16):** Python cho Data Analysis (Pandas, Seaborn, Thống kê cơ bản).
-  * **Phase 5 (Tuần 17-20):** Reporting & Communication (Kể chuyện qua dữ liệu, quản lý kỳ vọng của stakeholder).
-  * **Phase 6 (Tuần 21-24):** Advanced & Specialization (Tối ưu hóa Query, A/B Testing).
-
-### 2. [BI Engineer (BIE)](./ROADMAP-BI-ENGINEER.md)
-* **Đối tượng:** Các thành viên đã vững SQL, hiểu nghiệp vụ doanh nghiệp (DA) và muốn chuyển dịch sang hướng tối ưu hóa báo cáo, thiết kế semantic layer và thúc đẩy self-service analytics.
-* **Thời gian:** 5 - 12 tháng.
-* **Nội dung trọng tâm:**
-  * **Phase 1 (Tuần 1-4):** BI Tool Mastery (Apache Superset, Amazon QuickSight).
-  * **Phase 2 (Tuần 5-10):** Dimensional Modeling (Thiết kế Star Schema, Snowflake, SCD Type 2).
-  * **Phase 3 (Tuần 11-14):** Data Visualization Best Practices (Quy tắc thiết kế 5 giây, phối màu chuẩn).
-  * **Phase 4 (Tuần 15-18):** KPI & Semantic Layer (Định nghĩa KPIs dùng chung toàn doanh nghiệp).
-  * **Phase 5 (Tuần 19-22):** Performance & Self-Service (Materialized views, aggregate tables, phân quyền).
-  * **Phase 6 (Tuần 23+):** BI Governance & Ops (Quy trình vận hành, audit và thu hồi dashboard cũ).
-
-### 3. [Data Analyst → Analytics Engineer (DA to AE)](./ROADMAP-DA-TO-AE.md)
-* **Đối tượng:** Data Analyst hoặc BI Engineer muốn chuyển mình sang vai trò Analytics Engineer (AE) — người chịu trách nhiệm chính ở Transformation Layer (dbt), áp dụng các nghệ thuật phần mềm (Software Engineering) vào dữ liệu.
-* **Thời gian:** 12 - 18 tháng.
-* **Nội dung trọng tâm:**
-  * **Phase 1-2 (Tháng 1-6):** Xây dựng nền tảng vững chắc về SQL, Business và thiết lập Dashboard.
-  * **Phase 3 (Tháng 7-12):** Chuyển giao sang AE (Làm chủ dbt, Git workflow, CI/CD, dbt test).
-  * **Phase 4 (Tháng 12+):** SWE Best Practices (Quản trị môi trường SIT/UAT/PROD, Testing Pyramid, Data Governance, Security, Observability).
+Mỗi roadmap bao gồm:
+- Tổng quan vai trò & responsibilities
+- Skill matrix theo level (Technical + Soft skills)
+- Learning path chi tiết theo phase
+- Resources verified (courses, books, certifications, communities)
+- Portfolio projects gợi ý
+- Interview prep
+- Salary benchmark (VN market 2025-2026)
+- Career progression paths
+- **Day-in-the-Life stories** (theo level: Intern → Senior)
+- **Vietnam Job Market Analysis** (companies, JD mẫu, hiring trends)
+- **Learning Schedule Templates** (part-time 2h/ngày & full-time intensive)
 
 ---
 
-## 🌐 Triết lý Thiết kế: Đa Doanh nghiệp & Đa Lĩnh vực (Multi-Domain Approach)
+## 📚 Danh sách Roadmaps
 
-Một trong những cải tiến cốt lõi của bộ tài liệu này là **tính thích ứng cao với nhiều domain khác nhau** thay vì chỉ đóng khung trong một lĩnh vực duy nhất. 
+Mỗi role trong data giống như một nghề thủ công riêng — cùng làm việc với dữ liệu, nhưng góc nhìn, công cụ, và "sản phẩm cuối" hoàn toàn khác nhau. DA giống thám tử tìm insight ẩn trong data. BI Developer là kiến trúc sư hệ thống thông tin cho cả tổ chức. BI Engineer là người xây nền móng phía sau mỗi dashboard đẹp. Data Governance là "hệ miễn dịch" giữ cho data organization khỏe mạnh. Analytics Engineer là nhà máy lọc — biến quặng thô thành vàng ròng, có quy trình, có kiểm định.
 
-Trong mỗi roadmap, các ví dụ thực hành, thiết kế Data Model (Star Schema) và danh sách KPI đều được phân bổ cân bằng và chi tiết qua 3 ngành công nghiệp phổ biến nhất hiện nay:
-1. 🛒 **E-commerce & Retail (Thương mại điện tử & Bán lẻ):** Tập trung vào luồng bán hàng (Sales, Orders), Phân khúc khách hàng (Customer cohorts), Vận chuyển và Tiếp thị.
-2. 💻 **SaaS & Subscription (Phần mềm dịch vụ):** Chú trọng vào doanh thu định kỳ (MRR/ARR), chi phí thu hút khách hàng (CAC), giá trị vòng đời (LTV) và tỷ lệ rời bỏ (Churn Rate).
-3. 🏦 **Banking & Fintech (Tài chính & Ngân hàng):** Đi sâu vào nghiệp vụ tín dụng (Credit/Lending), Nợ xấu (NPL), Quản lý số dư (CASA Ratio), và Biên thu nhập lãi thuần (NIM).
-
-Nhờ cách thiết kế này, dù doanh nghiệp của bạn hoạt động ở bất kỳ lĩnh vực nào, bạn đều có thể dễ dàng đối chiếu các khái niệm trong lộ trình vào bài toán thực tế của công ty.
-
----
-
-## 🛠️ Hướng dẫn Sử dụng (How to Use)
-
-1. **Xác định Vị trí Hiện tại:** Đọc kỹ mô tả nhiệm vụ và bảng đối chiếu kỹ năng (Skill Matrix) ở cuối mỗi roadmap để định vị bản thân đang ở mức độ nào.
-2. **Theo sát các Deliverables:** Mỗi phase đều đi kèm với checklist công việc (`[ ] Deliverables`). Hãy đảm bảo hoàn thành và được Review trước khi bước sang phase tiếp theo.
-3. **Thực hành Thực tế:** Tận dụng các template có sẵn (như *KPI Documentation Template*, *Profiling Template*, *SWE Environments structure*) để áp dụng ngay vào công việc hàng ngày tại dự án của bạn.
-4. **Tham khảo Tài nguyên:** Ở cuối mỗi file đều có danh sách tài liệu đọc thêm (Resources) từ các nguồn uy tín hàng đầu thế giới để bạn tự nghiên cứu sâu hơn.
+| # | Role | File | Mô tả |
+|---|---|---|---|
+| 1 | **Data Analyst (DA)** | [ROADMAP-DA.md](./ROADMAP-DA.md) | Phân tích dữ liệu, insight, storytelling — thám tử của thế giới data |
+| 2 | **Business Intelligence (BI)** | [ROADMAP-BI.md](./ROADMAP-BI.md) | Dashboard, reporting systems, visualization — kiến trúc sư thông tin |
+| 3 | **BI Engineer** | [ROADMAP-BI-ENGINEER.md](./ROADMAP-BI-ENGINEER.md) | BI infrastructure, pipelines, data warehouse — người xây nền móng |
+| 4 | **Data Governance (DG)** | [ROADMAP-DG.md](./ROADMAP-DG.md) | Policies, quality, compliance, catalog — hệ miễn dịch của data org |
+| 5 | **Analytics Engineer (AE)** | [ROADMAP-AE.md](./ROADMAP-AE.md) | dbt, transformation layer, data modeling — nhà máy lọc dữ liệu |
+| 6 | **Switch: DA → AE** | [ROADMAP-SWITCH-DA-TO-AE.md](./ROADMAP-SWITCH-DA-TO-AE.md) | Transition guide, timeline, portfolio — con đường tự nhiên nhất |
 
 ---
 
-*Chúc các bạn có một hành trình phát triển sự nghiệp rực rỡ và đóng góp nhiều giá trị dữ liệu thiết thực cho doanh nghiệp!*
+## 🔀 So sánh nhanh các roles
+
+Hãy tưởng tượng data team như một nhà hàng: DA là người nếm thử và review món ăn (insight), BI Developer là người bày trí và serve (dashboard), BI Engineer là đầu bếp phụ chuẩn bị nguyên liệu sạch (pipeline), AE là người chuẩn hóa công thức nấu (transformation), và DG là người đảm bảo vệ sinh an toàn thực phẩm (governance). Mỗi role thiếu một thì nhà hàng không thể vận hành.
+
+### Technical Focus
+
+```
+                    Business ◄─────────────────────────────► Engineering
+                         │                                       │
+               DA ───────┼──── BI ──── DG ──── AE ──── BI Eng ──┤
+                         │                                       │
+            Insight      │    Report   Policy  Transform  Infra  │
+```
+
+### Skill Overlap
+
+| Skill | DA | BI | BI Eng | DG | AE |
+|---|:---:|:---:|:---:|:---:|:---:|
+| SQL | ⭐⭐⭐ | ⭐⭐ | ⭐⭐⭐ | ⭐⭐ | ⭐⭐⭐⭐ |
+| Python | ⭐⭐ | ⭐ | ⭐⭐⭐ | ⭐ | ⭐⭐ |
+| Statistics | ⭐⭐⭐ | ⭐ | ⭐ | ⭐ | ⭐ |
+| BI Tools | ⭐⭐ | ⭐⭐⭐⭐ | ⭐⭐ | ⭐ | ⭐ |
+| Data Modeling | ⭐ | ⭐⭐ | ⭐⭐⭐ | ⭐⭐ | ⭐⭐⭐⭐ |
+| dbt | - | - | ⭐⭐⭐ | ⭐ | ⭐⭐⭐⭐ |
+| Git/CI/CD | ⭐ | ⭐ | ⭐⭐⭐ | ⭐ | ⭐⭐⭐ |
+| Cloud DW | ⭐ | ⭐ | ⭐⭐⭐ | ⭐ | ⭐⭐⭐ |
+| Policy/Compliance | - | ⭐ | ⭐ | ⭐⭐⭐⭐ | ⭐ |
+| Business Acumen | ⭐⭐⭐ | ⭐⭐⭐ | ⭐⭐ | ⭐⭐ | ⭐⭐ |
+
+### Salary Ranges (Mid level, VND/tháng)
+
+| Role | Range | Demand trend |
+|---|---|---|
+| DA | 20-40tr | Stable, high supply |
+| BI | 22-45tr | Stable, moderate supply |
+| BI Engineer | 25-50tr | Growing fast |
+| DG | 22-45tr | Growing (regulation-driven) |
+| AE | 28-55tr | Highest growth, lowest supply |
+
+---
+
+## 🎯 Chọn role nào?
+
+Nếu bạn đang phân vân — đừng lo, đó là bình thường. Không ai bắt đầu career bằng cách biết chính xác mình muốn gì. Flowchart dưới đây giúp bạn nhìn rõ hơn thiên hướng của mình. Nhưng nhớ: career paths không linear — nhiều người bắt đầu DA, rẽ sang AE, rồi quay lại BI. Quan trọng là bạn bắt đầu đi.
+
+### Flowchart quyết định
+
+```
+Bạn thích gì nhất?
+│
+├── "Tìm insight, kể story bằng data"
+│   └── → Data Analyst
+│
+├── "Xây dashboard đẹp, serve cả company"
+│   └── → BI Analyst/Developer
+│
+├── "Build hệ thống data pipeline + BI"
+│   └── → BI Engineer
+│
+├── "Đảm bảo data đúng, an toàn, tuân thủ"
+│   └── → Data Governance
+│
+├── "Write code biến raw → trusted data, apply SWE practices"
+│   └── → Analytics Engineer
+│
+└── "Đang là DA, muốn upskill + salary growth"
+    └── → Switch DA → AE
+```
+
+---
+
+## 📅 Last Updated
+
+June 2026
+
+---
+
+## 📝 Notes
+
+- Salary benchmarks dựa trên market VN (HCM/HN), khảo sát từ TopDev, ITViec, LinkedIn, Glassdoor
+- Resources links verified tại thời điểm viết (June 2026)
+- Career paths không linear — có thể combine skills từ nhiều roles
+- Context đã được thêm vào các roadmap relevant (DG, AE)
+
+---
+
+> *Dù bạn chọn con đường nào — nhớ rằng mọi senior đều từng là fresher lo lắng. Mọi expert đều từng Google "what is LEFT JOIN." Bạn không cần giỏi sẵn — bạn chỉ cần bắt đầu và không dừng lại. Data career tại Việt Nam đang ở thời điểm vàng: demand tăng, salary tăng, cơ hội remote tăng. Hãy tận dụng momentum này. Chúc bạn tìm được con đường phù hợp, và enjoy hành trình.*

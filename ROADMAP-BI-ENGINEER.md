@@ -1,452 +1,397 @@
-# Career Roadmap: BI Engineer
+# ⚙️ BI Engineer — Career Roadmap
 
-## Bối cảnh
+> *Nếu BI Developer là người xây ngôi nhà đẹp, thì BI Engineer là người đặt nền móng, kéo điện nước, và đảm bảo ngôi nhà đứng vững qua mưa bão. Không ai khen BI Engineer khi pipeline chạy smooth — nhưng ai cũng tìm bạn khi dashboard load chậm 30 giây, khi data sáng nay không refresh, khi metric hôm qua bị sai. Bạn là người "đằng sau sân khấu" — khi CEO nhìn dashboard load trong 2 giây với data fresh mỗi sáng, họ không biết phía sau có ai đó đang optimize distribution keys, tune incremental refresh, và setup CI/CD cho Power BI deployments. Nếu bạn thích xây hệ thống mà người khác dựa vào mỗi ngày, nếu bạn cảm thấy thỏa mãn khi infrastructure chạy invisible nhưng reliable — BI Engineer là con đường của bạn.*
 
-Roadmap dành cho thành viên đã có nền tảng DA (SQL vững, hiểu business) và muốn chuyển sang BI Engineer — vai trò tập trung vào visualization, data modeling cho reporting, và self-service analytics.
+## 1. Tổng quan vai trò
 
----
+**BI Engineer** là hybrid giữa Data Engineer và BI Developer. Vai trò này tập trung vào việc xây dựng và tối ưu hóa data infrastructure phía sau hệ thống BI — bao gồm ETL pipelines, data warehouse modeling, semantic layers, và CI/CD cho analytics platform.
 
-## Vai trò BI Engineer
+### Phân biệt BI Engineer vs BI Developer vs Data Engineer
 
-| Aspect | Mô tả |
-|--------|--------|
-| **Mission** | Xây dựng hệ thống dashboards + data models phục vụ decision-making |
-| **Collaborate with** | Business stakeholders, Data Analyst, AE, Management |
-| **Output** | Dashboards, KPI definitions, dimensional models, semantic layer |
-| **Tools** | Superset / QuickSight, SQL (Redshift), dbt (curated layer) |
+| Tiêu chí | BI Developer | BI Engineer | Data Engineer |
+|---|---|---|---|
+| Focus | Visualization & reports | BI infrastructure & pipelines | General data platform |
+| Primary output | Dashboards | Optimized data layer cho BI | Data pipelines & platform |
+| Core tools | Power BI, Tableau | dbt + Warehouse + BI tool | Spark, Airflow, Kafka |
+| Data modeling | Semantic/report model | Physical + semantic model | Physical model |
+| Code depth | DAX/LookML | SQL + Python + IaC | Python + Scala/Java |
+| Users served | Business | BI team + Business | Data team + downstream |
 
-### BI Engineer vs Data Analyst
-
-| DA | BI Engineer |
-|----|-------------|
-| Ad-hoc queries & reports | Hệ thống dashboards production |
-| Explore & answer questions | Design data models cho self-service |
-| 1-time analysis | Recurring, automated, maintained |
-| Trả lời "chuyện gì đang xảy ra?" | Trả lời "tôi muốn tự xem data bất kỳ lúc nào" |
-| Output: insight | Output: product (dashboard = product) |
-
----
-
-## Phase 1: BI Tool Mastery (Tuần 1-4)
-
-**Mục tiêu:** Thành thạo ít nhất 1 BI tool, hiểu kiến trúc dashboard.
-
-### Tools toys
-
-| Tool | Dùng cho | Status |
-|------|----------|--------|
-| Apache Superset | Internal analytics, ad-hoc | Đang dùng |
-| Amazon QuickSight | Management reporting, embedded | Đang triển khai |
-| Metabase | Quick exploration (optional) | Evaluate |
-
-### Skills
-
-| Skill | Level cần đạt | Ghi chú |
-|-------|:-------------:|---------|
-| Dashboard creation | ⭐⭐⭐⭐ | Charts, filters, drill-down |
-| Chart type selection | ⭐⭐⭐⭐ | Đúng chart cho đúng data |
-| SQL in BI tool | ⭐⭐⭐⭐ | Custom queries, virtual datasets |
-| Filters & parameters | ⭐⭐⭐⭐ | Dynamic filtering, cross-filter |
-| Permissions & sharing | ⭐⭐⭐ | Row-level, role-based access |
-| Performance tuning | ⭐⭐⭐ | Caching, query optimization |
-
-### Chart Selection Guide
-
-| Mục đích | Chart type |
-|----------|-----------|
-| Trend over time | Line chart, Area chart |
-| Comparison | Bar chart (horizontal for many categories) |
-| Composition | Stacked bar, Pie/Donut (≤5 categories) |
-| Distribution | Histogram, Box plot |
-| Relationship | Scatter plot |
-| KPI highlight | Big Number, Gauge |
-| Geographic | Map, Choropleth |
-| Ranking | Horizontal bar (sorted) |
-
-### Deliverables
-
-- [ ] Tạo 3 dashboards trên Superset (complete với filters, drill-down)
-- [ ] 1 dashboard trên QuickSight (management reporting)
-- [ ] Document chart selection reasoning cho mỗi dashboard
-- [ ] Performance < 5s load time cho tất cả dashboards
+### Responsibilities chính
+- Thiết kế & maintain data warehouse schema (Kimball/Data Vault)
+- Xây dựng & optimize ETL/ELT pipelines feeding BI layer
+- Quản lý semantic layer (dbt metrics, LookML, Cube.js)
+- Implement data quality checks & monitoring
+- CI/CD pipelines cho BI deployments (Power BI / Tableau / Looker)
+- Performance tuning: query optimization, materialization strategy
+- Data governance: lineage, catalog, access control
+- Bridge giữa Data Engineering team và BI/Analytics team
 
 ---
 
-## Phase 2: Dimensional Modeling (Tuần 5-10)
+## 2. Skill Matrix theo Level
 
-**Mục tiêu:** Thiết kế data models tối ưu cho BI — star schema, SCD, aggregations.
+> BI Engineer cần skill set rộng hơn BI Developer: bạn không chỉ biết DAX — bạn cần biết cả Python, Airflow, CI/CD, và cloud infrastructure. Nghe nhiều? Đừng lo. Không ai giỏi hết từ đầu. Bảng dưới giúp bạn biết ưu tiên gì ở mỗi level — đừng cố học hết cùng lúc, hãy xây từng tầng.
 
-### Concepts
+### Technical Skills
 
-| Concept | Mô tả | Ví dụ |
-|---------|--------|-------------|
-| Fact table | Bảng chứa events/metrics (số đo) | fact_orders, fact_subscriptions, fact_transactions |
-| Dimension table | Bảng mô tả (thuộc tính) | dim_customer, dim_product, dim_users |
-| Star schema | 1 fact + N dimensions | fact_orders → dim_customer, dim_store, dim_date |
-| Snowflake | Dimension normalized thêm | dim_product → dim_category → dim_department |
-| SCD Type 1 | Overwrite (không giữ history) | dim_customer.phone (update mới nhất) |
-| SCD Type 2 | Giữ history (effective_from/to) | dim_customer_history (track thay đổi segment) |
-| Degenerate dim | Dimension nằm trong fact | order_id trong fact_orders |
-| Junk dimension | Gộp flags/indicators nhỏ | dim_flags (is_vip, is_staff, is_active) |
-| Aggregate table | Pre-computed summaries | agg_daily_store_revenue |
+| Skill | Intern | Fresher | Junior | Mid | Senior |
+|---|:---:|:---:|:---:|:---:|:---:|
+| SQL | Basic queries | Complex JOINs, CTEs | Window fn, optimization | Query plan analysis | Architecture design |
+| Python | Basics | Scripting, Pandas | ETL scripts, APIs | Frameworks, testing | System design |
+| Data Warehouse | Concept | Star schema | SCD, bridge tables | Data Vault, modeling patterns | Enterprise architecture |
+| dbt | - | Project structure | Models, tests, docs | Macros, packages, incremental | Framework design |
+| Cloud DW (Redshift/BQ/Snowflake) | - | Basic queries | Distribution, sort keys | Cost optimization | Multi-cluster strategy |
+| ETL/Orchestration | - | Understand concepts | Airflow DAGs | Complex orchestration | Platform design |
+| BI Tool (Power BI/Tableau) | - | Basic usage | Dataflows, datasets | Deployment pipelines | Governance & DevOps |
+| CI/CD & DevOps | - | Git basics | PR workflow | Pipeline automation | Full GitOps |
+| Data Quality | - | - | Basic tests | Framework design | Observability platform |
+| IaC (Terraform/CloudFormation) | - | - | - | Basic resources | Full infrastructure |
 
-### Star Schema Example (Ví dụ Star Schema E-commerce)
+### Soft Skills
 
-```
-                    ┌──────────────┐
-                    │  dim_date    │
-                    │  ├─ date_key │
-                    │  ├─ month    │
-                    │  ├─ quarter  │
-                    │  └─ year     │
-                    └──────┬───────┘
-                           │
-┌──────────────┐    ┌──────▼────────────┐    ┌──────────────┐
-│ dim_customer │────│  fact_orders      │────│ dim_store    │
-│ ├─ customer_key│  │  ├─ order_id      │    │ ├─ store_id  │
-│ ├─ name      │    │  ├─ customer_key  │    │ ├─ store_name│
-│ ├─ segment   │    │  ├─ store_key     │    │ ├─ region    │
-│ └─ tier      │    │  ├─ product_key   │    │ └─ city      │
-└──────────────┘    │  ├─ amount        │    └──────────────┘
-                    │  ├─ order_status  │
-┌──────────────┐    │  └─ order_date_key│
-│ dim_product  │────└───────────────────┘
-│ ├─ product_id│
-│ ├─ category  │
-│ └─ type      │
-└──────────────┘
-```
-
-### Áp dụng
-
-| Layer | Vai trò trong BI |
-|-------|-----------------|
-| `staging` (stg_) | Raw data cleaned — không dùng trực tiếp cho BI |
-| `golden` (cst_, ev_) | Business logic applied — source cho dimensions |
-| `curated` (cur_) | **BI-ready** — star schema, aggregates, KPI tables |
-
-### Deliverables
-
-- [ ] Thiết kế star schema cho 1 business domain (ví dụ: E-commerce Orders, SaaS Subscriptions, hoặc Fintech Lending)
-- [ ] Implement SCD Type 2 cho ít nhất 1 dimension
-- [ ] Tạo 2+ aggregate tables cho dashboard performance
-- [ ] Document data model (ERD diagram + column descriptions)
-- [ ] Review & optimize existing curated models
+| Skill | Intern | Fresher | Junior | Mid | Senior |
+|---|:---:|:---:|:---:|:---:|:---:|
+| Cross-team Communication | - | Respond | Proactive | Lead discussions | Architecture decisions |
+| Documentation | Note-taking | READMEs | Technical guides | ADRs, runbooks | Standards & frameworks |
+| Problem Decomposition | Follow steps | Defined problems | Break into subtasks | Design solutions | Define approach |
+| Project Management | - | - | Task tracking | Sprint planning | Roadmap ownership |
+| Mentoring | - | - | - | Guide juniors | Build team capability |
 
 ---
 
-## Phase 3: Data Visualization Best Practices (Tuần 11-14)
+## 3. Learning Path chi tiết
 
-**Mục tiêu:** Thiết kế dashboards effective — không chỉ đẹp mà actionable.
+> Khác với BI Developer học tool trước, BI Engineer học infrastructure trước. SQL + Data Warehouse là nền tảng, dbt là vũ khí chính, rồi Airflow + CI/CD là thứ biến bạn từ "người viết query" thành "người vận hành platform." Kiên nhẫn — mỗi layer xây lên đều có ý nghĩa. Giống xây nhà: móng trước, tường sau, mái cuối.
 
-### Nguyên tắc thiết kế
+### Phase 1: Foundation (Intern → Fresher) — 0-6 tháng
 
-| Nguyên tắc | Mô tả | Anti-pattern |
-|------------|--------|-------------|
-| **1 dashboard = 1 question** | Mỗi dashboard trả lời 1 business question chính | Dashboard "tổng hợp mọi thứ" |
-| **5-second rule** | User phải hiểu key insight trong 5 giây | Quá nhiều charts, không focus |
-| **Data-ink ratio** | Maximize data, minimize decoration | 3D charts, gradient backgrounds |
-| **Progressive disclosure** | Overview → Detail (drill-down) | Dump tất cả data lên 1 page |
-| **Consistent encoding** | Cùng color = cùng meaning across dashboards | Xanh = tốt ở tab A, xấu ở tab B |
-| **Mobile-friendly** | Responsive layout | Fixed-width dashboards |
+**Mục tiêu:** SQL fluent, hiểu data warehouse concepts
 
-### Dashboard Structure Template
+| Tuần | Chủ đề | Output |
+|---|---|---|
+| 1-3 | SQL mastery: complex joins, aggregations, CTEs | Query portfolio |
+| 4-6 | Python scripting: file processing, APIs, Pandas | ETL scripts |
+| 7-9 | Data warehouse concepts: Kimball methodology, star schema | Model diagrams |
+| 10-12 | Cloud basics: AWS/GCP fundamentals, Redshift/BigQuery intro | Cloud lab setup |
+| 13-16 | Version control: Git workflow, branching strategy | Collaborative project |
+| 17-20 | BI tool deep-dive: data layer (datasets, dataflows) | Data model in BI tool |
+| 21-24 | Mini project: design + load star schema from raw data | Portfolio piece #1 |
 
-```
-┌─────────────────────────────────────────────────────┐
-│  TITLE: [Business Question]       Filters: [▼]      │
-├─────────────────────────────────────────────────────┤
-│                                                     │
-│  ┌─────┐  ┌─────┐  ┌─────┐  ┌─────┐                 │
-│  │ KPI │  │ KPI │  │ KPI │  │ KPI │  ← Big Numbers  │
-│  │  1  │  │  2  │  │  3  │  │  4  │                 │
-│  └─────┘  └─────┘  └─────┘  └─────┘                 │
-│                                                     │
-│  ┌─────────────────────┐  ┌──────────────────┐      │
-│  │                     │  │                  │      │
-│  │   Primary Chart     │  │  Secondary Chart │      │
-│  │   (trend/compare)   │  │  (breakdown)     │      │
-│  │                     │  │                  │      │
-│  └─────────────────────┘  └──────────────────┘      │
-│                                                     │
-│  ┌─────────────────────────────────────────────┐    │
-│  │             Detail Table (drill-down)       │    │
-│  └─────────────────────────────────────────────┘    │
-└─────────────────────────────────────────────────────┘
-```
+### Phase 2: Core Competency (Fresher → Junior) — 6-12 tháng
 
-### Color Palette Standards
+**Mục tiêu:** Build data pipelines feeding BI, dbt proficiency
 
-| Ý nghĩa | Color | Hex |
-|----------|-------|-----|
-| Positive / Good | Green | #2ECC71 |
-| Negative / Bad | Red | #E74C3C |
-| Neutral / Info | Blue | #3498DB |
-| Warning | Orange | #F39C12 |
-| Company brand | (theo brand guide) | — |
+| Tuần | Chủ đề | Output |
+|---|---|---|
+| 1-4 | dbt fundamentals: models, sources, tests, docs | dbt project |
+| 5-8 | dbt advanced: incremental models, macros, packages | Production patterns |
+| 9-12 | Airflow basics: DAGs, operators, scheduling | Orchestrated pipeline |
+| 13-16 | Data quality: dbt tests, great expectations, monitoring | Quality framework |
+| 17-20 | CI/CD for analytics: GitHub Actions, pre-commit, sqlfluff | Automated pipeline |
+| 21-24 | Project: full ELT pipeline → dbt → BI dashboard | Portfolio piece #2 |
 
-### Deliverables
+### Phase 3: Advanced (Junior → Mid) — 12-24 tháng
 
-- [ ] Redesign 1 dashboard hiện có theo best practices
-- [ ] Tạo dashboard style guide cho team (colors, fonts, layout)
-- [ ] A/B test: 2 versions cùng data, hỏi user prefer cái nào
-- [ ] Presentation: demo dashboard + explain design decisions
+**Mục tiêu:** Architect BI platform, optimize at scale
 
----
+| Tháng | Chủ đề | Output |
+|---|---|---|
+| 1-2 | Advanced warehouse: distribution styles, sort keys, workload mgmt | Optimization report |
+| 3-4 | Semantic layer: dbt metrics, MetricFlow, Cube.js | Metrics platform |
+| 5-6 | Data governance: lineage, catalog (OpenMetadata, Atlan) | Governance setup |
+| 7-8 | Advanced orchestration: dynamic DAGs, SLA, alerting | Production Airflow |
+| 9-10 | BI DevOps: Power BI Git integration, Tableau migration | CI/CD for BI |
+| 11-12 | Performance at scale: materialized views, caching, query patterns | Performance playbook |
 
-## Phase 4: KPI & Semantic Layer (Tuần 15-18)
+### Phase 4: Expert (Mid → Senior) — 24+ tháng
 
-**Mục tiêu:** Định nghĩa KPIs rõ ràng, tạo semantic layer để mọi người dùng chung definitions.
+**Mục tiêu:** Platform vision, cross-org influence
 
-### Tại sao cần Semantic Layer?
-
-| Vấn đề | Không có semantic layer | Có semantic layer |
-|--------|------------------------|-------------------|
-| Revenue = gì? | Mỗi analyst define khác | 1 definition duy nhất |
-| Active customer = gì? | Query khác nhau | 1 metric, reusable |
-| Ai đúng? | Tranh cãi, mất thời gian | Single source of truth |
-| Thay đổi logic | Sửa 20 dashboards | Sửa 1 chỗ, cascade |
-
-### KPI Documentation Template
-
-```markdown
-## KPI: [Tên KPI]
-
-**Owner:** [Phòng ban / người chịu trách nhiệm]
-**Frequency:** Daily / Weekly / Monthly
-**Target:** [Con số mục tiêu]
-
-### Definition
-[Mô tả business chính xác]
-
-### Formula
-[Công thức tính — SQL hoặc text]
-
-### Data Source
-- Table: [curated table name]
-- Column: [column name]
-- Filter: [conditions]
-
-### Caveats
-- [Những trường hợp đặc biệt]
-- [Exclusions]
-- [Known limitations]
-
-### History
-| Date | Change | By |
-|------|--------|----|
-```
-
-### KPIs theo Business Domains phổ biến
-
-Dưới đây là một số KPIs cốt lõi của các mô hình kinh doanh chính mà một BI Engineer cần nắm vững để thiết kế dashboards phù hợp:
-
-#### 1. E-commerce & Retail (Thương mại điện tử & Bán lẻ)
-| Domain Area | KPI | Công thức / Định nghĩa | Ý nghĩa |
-|-------------|-----|-------------------------|---------|
-| Sales | GMV | `SUM(order_amount)` | Tổng giá trị giao dịch trong kỳ (chưa trừ hủy/hoàn) |
-| Sales | AOV (Average Order Value)| `GMV / Total Orders` | Giá trị trung bình của mỗi đơn hàng |
-| Conversion | CR (Conversion Rate) | `Purchasing Users / Total Visitors` | Tỷ lệ chuyển đổi khách ghé thăm thành người mua hàng |
-| Customer | Cohort Retention Rate | `Active Cohort Users in Month N / Initial Cohort Users` | Tỷ lệ giữ chân khách hàng qua từng tháng |
-
-#### 2. SaaS & Subscription (Phần mềm dịch vụ)
-| Domain Area | KPI | Công thức / Định nghĩa | Ý nghĩa |
-|-------------|-----|-------------------------|---------|
-| Revenue | MRR / ARR | `SUM(active_subscription_value)` | Doanh thu định kỳ hàng tháng / hàng năm |
-| Growth | CAC (Customer Acquisition Cost)| `Total Marketing Spend / New Customers` | Chi phí để có được 1 khách hàng mới |
-| Unit Econ | LTV / CAC Ratio | `LTV / CAC` | Đo lường hiệu quả kinh tế trên mỗi khách hàng (đẹp nhất > 3) |
-| Retention | Logo Churn Rate | `Cancelled Accounts / Active Accounts at Start` | Tỷ lệ tài khoản dừng/hủy gói dịch vụ |
-
-#### 3. Banking & Fintech (Ngân hàng & Công nghệ tài chính)
-| Domain Area | KPI | Công thức / Định nghĩa | Ý nghĩa |
-|-------------|-----|-------------------------|---------|
-| Credit | NPL Ratio (Tỷ lệ nợ xấu)| `Nợ xấu (nhóm 3-5) / Tổng dư nợ` | Đo lường chất lượng danh mục và rủi ro tín dụng |
-| Credit | Disbursement Volume | `SUM(disbursed_amount)` | Tổng quy mô giải ngân trong kỳ |
-| Customer | CASA Ratio | `(CASA Balance / Total Deposits) * 100` | Tỷ lệ tiền gửi không kỳ hạn (nguồn vốn rẻ) |
-| Finance | NIM (Net Interest Margin)| `(Interest Income - Interest Expense) / Avg Earning Assets` | Biên thu nhập lãi thuần |
-| Finance | CIR (Cost to Income Ratio)| `Operating Expense / Operating Income` | Hiệu quả vận hành (càng thấp càng tốt) |
-
-### Deliverables
-
-- [ ] KPI catalog document (20+ KPIs across 3 domains hoặc sâu vào domain chính của công ty)
-- [ ] Implement metrics/semantic layer trong BI tool hoặc dbt (metrics / curated models)
-- [ ] Mỗi KPI có: definition, formula, owner, source, caveats
-- [ ] Training session cho business: "cách đọc dashboard & phân tích số liệu"
-- [ ] Feedback loop: business validate KPI definitions
+| Tháng | Chủ đề | Output |
+|---|---|---|
+| 1-3 | Data platform architecture: lakehouse, data mesh principles | Architecture blueprint |
+| 4-6 | Cost engineering: compute optimization, storage tiering | Cost reduction plan |
+| 7-9 | Real-time BI: streaming, CDC, near-real-time refresh | Real-time architecture |
+| 10-12 | AI-enhanced BI: automated insights, NLQ, vector search | AI integration strategy |
+| Ongoing | Technical leadership, vendor evaluation, hiring | Platform & team growth |
 
 ---
 
-## Phase 5: Performance & Self-Service (Tuần 19-22)
+## 4. Resources
 
-**Mục tiêu:** Dashboards nhanh, users tự phục vụ được mà không cần request mỗi lần.
+> BI Engineering nằm ở giao điểm của nhiều domains — nên resources cũng đa dạng: từ Kimball book (data modeling) đến Astronomer Academy (Airflow) đến dbt docs (transformation). Đừng cố đọc hết — chọn theo phase bạn đang ở. Mỗi phase có 2-3 resources "must-read", còn lại là "nice-to-have."
 
-### Performance Optimization
+### Courses (Verified ✓)
 
-| Technique | Khi nào dùng | Impact |
-|-----------|-------------|--------|
-| Materialized views | Queries phức tạp, join nhiều bảng | ⭐⭐⭐⭐⭐ |
-| Aggregate tables | Dashboard cần pre-computed | ⭐⭐⭐⭐⭐ |
-| Query caching | Data không đổi trong ngày | ⭐⭐⭐⭐ |
-| Partition pruning | Filter theo date | ⭐⭐⭐⭐ |
-| Dist/sort keys | Redshift-specific optimization | ⭐⭐⭐⭐ |
-| Limit columns | SELECT chỉ cần thiết | ⭐⭐⭐ |
-| Incremental refresh | Chỉ load data mới | ⭐⭐⭐⭐⭐ |
+| Course | Platform | Level | Link |
+|---|---|---|---|
+| dbt Fundamentals | dbt Learn | Beginner | [Link](https://courses.getdbt.com/courses/fundamentals) |
+| dbt Advanced Materializations | dbt Learn | Mid | [Link](https://courses.getdbt.com/courses/advanced-materializations) |
+| Analytics Engineering with dbt | DataCamp | Mid | [Link](https://www.datacamp.com/courses/introduction-to-dbt) |
+| Data Warehouse Concepts (Kimball) | Udemy | Beginner-Mid | [Link](https://www.udemy.com/course/data-warehouse-fundamentals-for-beginners/) |
+| AWS Data Analytics Specialty | AWS Training | Mid-Senior | [Link](https://aws.amazon.com/certification/certified-data-analytics-specialty/) |
+| Snowflake SnowPro Core | Snowflake | Mid | [Link](https://www.snowflake.com/certifications/) |
+| Apache Airflow Fundamentals | Astronomer | Mid | [Link](https://academy.astronomer.io/) |
+| Data Engineering Zoomcamp | DataTalks.Club | All (Free) | [Link](https://github.com/DataTalksClub/data-engineering-zoomcamp) |
 
-### Self-Service Strategy
+### Books
 
-```
-Level 1: View-only dashboards (management)
-         → Pre-built, click filters, no SQL needed
+| Sách | Tác giả | Level |
+|---|---|---|
+| The Data Warehouse Toolkit (3rd Ed) | Ralph Kimball | ⭐ Must-read |
+| Fundamentals of Data Engineering | Joe Reis & Matt Housley | Mid |
+| Data Pipelines Pocket Reference | James Densmore | Mid |
+| Building a Scalable Data Warehouse with Data Vault 2.0 | Daniel Linstedt | Senior |
+| Designing Data-Intensive Applications | Martin Kleppmann | Senior |
+| Analytics Engineering with SQL and dbt | Rui Machado & Hélder Russa | Mid |
 
-Level 2: Explore mode (power users)
-         → Drill-down, custom filters, export data
+### Certifications
 
-Level 3: SQL access (analysts)
-         → Curated tables, documented, governed
+| Cert | Tổ chức | Giá trị |
+|---|---|---|
+| dbt Analytics Engineering Certification | dbt Labs | ⭐ Core identity |
+| AWS Data Analytics Specialty | AWS | Cloud + data |
+| Snowflake SnowPro Core | Snowflake | Modern warehouse |
+| Google Professional Data Engineer | GCP | Comprehensive |
+| Microsoft DP-203 (Data Engineering) | Microsoft | Azure ecosystem |
+| Astronomer Certification for Apache Airflow | Astronomer | Orchestration |
 
-Level 4: Build dashboards (BI team)
-         → Full access, create & publish
-```
+### Communities & Practice
 
-### Deliverables
-
-- [ ] All production dashboards < 5s load time
-- [ ] Self-service documentation cho business users
-- [ ] Governance process: ai tạo/publish dashboard, review flow
-- [ ] Usage analytics: track dashboard adoption (views, users, frequency)
-- [ ] Optimize 3+ slow dashboards (document before/after metrics)
-
----
-
-## Phase 6: BI Governance & Ops (Tuần 23+)
-
-**Mục tiêu:** Vận hành BI như 1 product — versioning, monitoring, retirement.
-
-### BI Governance Framework
-
-| Aspect | Policy |
-|--------|--------|
-| **Creation** | MR review trước publish. Data source phải từ curated layer |
-| **Naming** | `[Domain] - [Subject] - [Audience]` (VD: "Sales - Monthly Revenue - Executive Team") |
-| **Ownership** | Mỗi dashboard có owner + backup owner |
-| **Review cadence** | Quarterly review: còn dùng? data đúng? performance OK? |
-| **Retirement** | > 30 ngày không ai xem → notify owner → archive sau 2 tuần |
-| **Access** | Role-based: viewer, editor, admin per workspace |
-
-### Dashboard Lifecycle
-
-```
-Draft → Review → Published → Active → Deprecated → Archived
-  │       │          │          │          │
-  └──fix──┘    ┌─────┘    ┌────┘     ┌────┘
-               │          │          │
-           Monitored   Quarterly   No views
-           (alerts)    review      30+ days
-```
-
-### Deliverables
-
-- [ ] BI governance document (creation, naming, review, retirement)
-- [ ] Dashboard inventory (tất cả dashboards: owner, status, last viewed)
-- [ ] Monitoring: alert khi data delay > SLA ảnh hưởng dashboard
-- [ ] Retire 5+ unused dashboards (clean up)
-- [ ] Onboarding guide cho BI consumer mới
+| Resource | Link |
+|---|---|
+| dbt Community (Slack + Discourse) | [community.getdbt.com](https://community.getdbt.com/) |
+| DataTalks.Club | [datatalks.club](https://datatalks.club/) |
+| r/dataengineering | [reddit.com/r/dataengineering](https://www.reddit.com/r/dataengineering/) |
+| Seattle Data Guy (blog) | [seattledataguy.substack.com](https://seattledataguy.substack.com/) |
+| Modern Data Stack Blog | [moderndatastack.xyz](https://www.moderndatastack.xyz/) |
+| Locally Optimistic (analytics community) | [locallyoptimistic.com](https://locallyoptimistic.com/) |
 
 ---
 
-## Skill Matrix — BI Engineer Levels
+## 5. Portfolio Projects gợi ý
 
-| Skill | Junior BI | Mid BI | Senior BI |
-|-------|:---------:|:------:|:---------:|
-| BI tool mastery | ⭐⭐⭐ | ⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ |
-| Dimensional modeling | ⭐⭐ | ⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ |
-| Visualization design | ⭐⭐⭐ | ⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ |
-| SQL | ⭐⭐⭐ | ⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ |
-| KPI definitions | ⭐⭐ | ⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ |
-| Stakeholder comm | ⭐⭐ | ⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ |
-| Performance tuning | ⭐ | ⭐⭐⭐ | ⭐⭐⭐⭐⭐ |
-| Self-service enablement | — | ⭐⭐⭐ | ⭐⭐⭐⭐⭐ |
-| BI governance | — | ⭐⭐ | ⭐⭐⭐⭐ |
-| Semantic layer | — | ⭐⭐⭐ | ⭐⭐⭐⭐⭐ |
-| Mentoring | — | ⭐⭐ | ⭐⭐⭐⭐ |
+> Portfolio BI Engineer cần show "end-to-end pipeline thinking" — không phải chỉ 1 dashboard, mà cả flow: source → dbt → warehouse → BI tool → monitoring. Nếu bạn publish 1 repo có Airflow + dbt + dbt docs + CI/CD + performance benchmark — bạn sẽ nổi bật hơn 90% candidates. Đó là bằng chứng bạn "nghĩ hệ thống."
 
----
+### Intern/Fresher Level
+1. **Star Schema Design** — Thiết kế + load dimensional model từ normalized source
+2. **SQL Performance Lab** — Benchmark queries, explain plans, optimize
+3. **Git Workflow for SQL** — Version control cho SQL scripts
 
-## Timeline tổng quan
+### Junior Level
+4. **dbt Project End-to-End** — Sources → staging → marts → docs → tests
+5. **Automated Data Pipeline** — Airflow + dbt + data quality checks
+6. **BI Dataset Optimization** — Redesign dataset cho Power BI DirectQuery performance
 
-```
-Tuần 1-4:    BI Tool Mastery (Superset + QuickSight)
-Tuần 5-10:   Dimensional Modeling (star schema, SCD)
-Tuần 11-14:  Visualization Best Practices
-Tuần 15-18:  KPI & Semantic Layer
-Tuần 19-22:  Performance & Self-Service
-Tuần 23+:    BI Governance & Ops
+### Mid Level
+7. **Semantic Layer Implementation** — dbt metrics / MetricFlow + downstream consumption
+8. **Data Catalog Setup** — OpenMetadata / Atlan integration với dbt
+9. **CI/CD for Analytics** — GitHub Actions + dbt Cloud + slim CI + deployment
 
-→ 5 tháng để trở thành Mid BI Engineer
-→ 12+ tháng để Senior BI (own semantic layer, governance)
-```
+### Senior Level
+10. **Data Platform Blueprint** — Full architecture: ingestion → warehouse → BI → governance
+11. **Real-time BI Pipeline** — CDC + streaming → materialized views → live dashboard
+12. **Cost Optimization Project** — Analyze warehouse spend, implement efficiency measures
 
 ---
 
-## Đánh giá tiến độ
+## 6. Interview Prep
 
-| Milestone | Criteria | Timeframe |
-|-----------|----------|-----------|
-| BI Starter | 3 dashboards live, basic filters | Tuần 4 |
-| BI Competent | Star schema design, chart best practices | Tuần 10 |
-| BI Independent | KPI catalog, semantic layer, self-service docs | Tuần 18 |
-| BI Senior | Governance, performance, mentor team | Tuần 23+ |
+> Interview BI Engineer thường kết hợp câu hỏi data modeling + system design. Họ muốn biết bạn không chỉ "viết dbt model chạy đúng" mà còn "thiết kế pipeline chịu tải cho tổ chức." Sẵn sàng vẽ architecture diagram trên whiteboard — đó là khoảnh khắc bạn tỏa sáng. Và nhớ: luôn giải thích "tại sao" chứ không chỉ "cái gì."
+
+### Technical Questions (by level)
+
+**Fresher/Junior:**
+- SCD Type 1 vs Type 2 — giải thích và SQL implementation
+- dbt: source freshness là gì? Khi nào cần?
+- Star schema: fact table vs dimension table
+- Incremental model: append vs merge vs delete+insert
+
+**Mid:**
+- Design data model cho hệ thống banking transactions (billions rows)
+- dbt project đang mất 2h để chạy — optimize thế nào?
+- Airflow DAG dependency management cho 200+ dbt models
+- Data quality incident: downstream dashboard sai — incident response?
+
+**Senior:**
+- Data mesh: domain-oriented ownership impact lên BI infrastructure
+- Migrate from legacy ETL (SSIS/Informatica) sang modern stack — plan?
+- Real-time vs batch BI — khi nào cần real-time? Trade-offs?
+- BI platform selection: Power BI vs Tableau vs Looker — evaluation framework
+
+### System Design Questions
+1. **Design a metric layer** — Multi-tool consumption, consistent definitions
+2. **Design data freshness monitoring** — SLA tracking, alerting, incident response
+3. **Design BI deployment pipeline** — Dev → UAT → Prod, rollback strategy
 
 ---
 
-## Career Path từ BI Engineer
+## 7. Salary Benchmark (VN Market 2025-2026)
 
-```
-                    ┌─────────────────┐
-                    │ Senior BI Eng   │
-                    └────────┬────────┘
-                             │
-              ┌──────────────┼────────────────────┐
-              │              │                    │
-     ┌────────▼────────┐ ┌───▼─────────┐ ┌────────▼──────────────┐
-     │  Analytics Eng  │ │  BI Lead    │ │  Data Product Mgr     │
-     │  (dbt pipeline) │ │  (team)     │ │  (strategy)           │
-     └─────────────────┘ └─────────────┘ └───────────────────────┘
-```
+> BI Engineer là "sweet spot" về salary — technical depth cao hơn BI Developer, nhưng không cần deep Spark/Kafka như Data Engineer. dbt skill là differentiator lớn nhất tại VN. Banking sector đang trả premium cho ai có "dbt + Redshift + Airflow" combo. Nếu bạn có cả 3, inbox LinkedIn sẽ không bao giờ yên.
+
+| Level | YoE | Salary Range (VND/tháng) | Note |
+|---|---|---|---|
+| Intern | 0 | 4-8 triệu | Lab + learning |
+| Fresher | 0-1 | 10-18 triệu | SQL + basic tools |
+| Junior | 1-2 | 15-28 triệu | dbt + pipeline |
+| Mid | 2-4 | 25-50 triệu | Architecture |
+| Senior | 4-7+ | 45-85 triệu | Platform ownership |
+| Lead/Principal | 7+ | 60-120+ triệu | Strategy + team |
+
+> *BI Engineer demand đang tăng mạnh tại VN (banking, fintech, e-commerce). dbt skill là differentiator lớn nhất. Salary cao hơn BI Developer ~20-30% do technical depth.*
 
 ---
 
-## Resources
+## 8. Career Progression Paths từ BI Engineer
 
-### BI Tools
-- [Apache Superset docs](https://superset.apache.org/docs/intro)
-- [Amazon QuickSight User Guide](https://docs.aws.amazon.com/quicksight/)
-- [Metabase docs](https://www.metabase.com/docs/latest/)
+> BI Engineer senior tự nhiên sẽ trở thành platform thinker. Từ đây, bạn có thể chọn đi sâu vào Data Platform (Spark, Kafka), đi rộng sang Solutions Architect, hoặc lead team. Overlap với Analytics Engineer rất lớn — nhiều người switch qua lại giữa 2 roles tùy context.
 
-### Data Visualization
-- [Storytelling with Data (Cole Nussbaumer)](http://www.storytellingwithdata.com/) — must-read
-- [The Big Book of Dashboards](https://www.bigbookofdashboards.com/)
-- [Information is Beautiful](https://informationisbeautiful.net/) — inspiration
-- [Datawrapper Blog](https://blog.datawrapper.de/) — practical chart advice
-- [Nightingale (Data Viz Society)](https://nightingaledvs.com/) — articles
+```
+BI Engineer Senior ─┬─→ Staff/Principal BI Engineer
+                    ├─→ Data Platform Engineer
+                    ├─→ Analytics Engineer (overlap lớn)
+                    ├─→ Engineering Manager (Data)
+                    └─→ Solutions Architect
+```
 
-### Dimensional Modeling
-- [The Data Warehouse Toolkit (Kimball)](https://www.kimballgroup.com/) — bible
-- [Star Schema: The Complete Reference](https://www.amazon.com/Star-Schema-Complete-Reference/dp/0071744320)
-- [Slowly Changing Dimensions explained](https://www.kimballgroup.com/data-warehouse-business-intelligence-resources/kimball-techniques/dimensional-modeling-techniques/type-1-2-3/)
-- [dbt Dimensional Modeling](https://docs.getdbt.com/terms/dimensional-modeling)
 
-### KPI & Metrics
-- [Lean Analytics (Alistair Croll)](http://leananalyticsbook.com/) — metric selection
-- [Measure What Matters (John Doerr)](https://www.whatmatters.com/) — OKR framework
-- [Data Council talks on Metrics Layer](https://www.datacouncil.ai/)
+---
 
-### Performance
-- [Redshift Query Performance](https://docs.aws.amazon.com/redshift/latest/dg/c-optimizing-query-performance.html)
-- [Superset Performance Tuning](https://superset.apache.org/docs/installation/cache/)
-- [QuickSight SPICE optimization](https://docs.aws.amazon.com/quicksight/latest/user/spice.html)
+## 9. Day-in-the-Life Stories
 
-### BI Strategy & Governance
-- [Gartner BI Maturity Model](https://www.gartner.com/)
-- [Self-Service BI Guide (Tableau)](https://www.tableau.com/learn/whitepapers/self-service-analytics)
-- [BI Governance Framework (TDWI)](https://tdwi.org/)
+> Muốn biết BI Engineer khác BI Developer ở đâu? Nhìn vào daily routine: BI Dev mở Power BI Desktop, BI Engineer mở terminal + VS Code + Airflow UI. Cùng serve business — nhưng ở layer khác nhau. Nếu bạn thấy hứng thú hơn khi debug query plan thay vì chọn màu biểu đồ — welcome aboard.
+
+### Junior BI Engineer — Fintech
+
+| Thời gian | Hoạt động | Tools |
+|---|---|---|
+| 8:30 | Check dbt run results: 2 tests failed | dbt Cloud, Slack |
+| 9:00 | Debug: `unique` test fail trên customer_dim → duplicate keys | DBeaver, SQL |
+| 9:30 | Fix: add deduplication logic trong staging model | VS Code, dbt |
+| 10:00 | Standup: report blocker, ask AE about source data | Teams |
+| 10:30 | Write new staging model cho payment transactions | VS Code, SQL |
+| 11:30 | Add schema tests: not_null, unique, accepted_values | YAML |
+| 13:00 | Create PR, run CI checks (sqlfluff + dbt test) | GitHub, GitHub Actions |
+| 14:00 | PR review từ senior: "Add incremental logic" | GitHub |
+| 14:30 | Implement incremental: append strategy + partition | VS Code, dbt |
+| 15:30 | Local test: `dbt run -s +model_name --target dev` | Terminal |
+| 16:00 | Update documentation: model description, column docs | dbt docs |
+| 16:30 | Self-study: Kimball book chapter 5 (SCD) | Book |
+
+> **Cảm nhận:** "Daily workflow = code + test + PR + learn. dbt is life."
+
+### Senior BI Engineer — Banking
+
+| Thời gian | Hoạt động | Tools |
+|---|---|---|
+| 8:00 | Review overnight Airflow DAGs, check SLA compliance | Airflow UI |
+| 8:30 | Investigate: golden model took 45min (usually 10min) | Redshift Query History |
+| 9:00 | Root cause: distribution key mismatch → broadcast join | EXPLAIN |
+| 9:30 | Fix: change distribution style, test on dev | dbt, Redshift |
+| 10:00 | Architecture review: new source integration plan | Miro, Teams |
+| 11:00 | Design data model cho new loan product | dbdiagram.io |
+| 13:00 | Code review: junior's PR (3 models + tests) | GitHub |
+| 13:30 | Mentor session: explain incremental strategies | Whiteboard |
+| 14:30 | Semantic layer: MetricFlow metric definitions | dbt, YAML |
+| 15:30 | OpenMetadata lineage integration | Python, API |
+| 16:30 | Write ADR: "Why append over merge for transactions" | Confluence |
+| 17:00 | Sprint planning prep | Jira |
+
+> **Cảm nhận:** "Mix of deep technical + architecture + mentoring. Own the platform, not just models."
+
+---
+
+## 10. Vietnam Job Market Analysis
+
+> "BI Engineer" tại VN thường ẩn dưới nhiều title: "Analytics Engineer", "Data Engineer (BI)", hoặc đơn giản là "BI Developer" nhưng JD đòi dbt + Airflow. Đọc kỹ JD, đừng chỉ nhìn title. Nếu thấy "dbt + warehouse + CI/CD" — đó là BI Engineer job.
+
+### Top Companies tuyển BI Engineer tại VN
+
+| Tier | Companies | Stack |
+|---|---|---|
+| Banking | VPBank, Techcombank, MBBank, VIB | dbt + Redshift + Airflow |
+| Fintech | MoMo, ZaloPay, Timo | dbt + BigQuery + Airflow |
+| E-commerce | Shopee, Lazada, Tiki | dbt/Spark + BigQuery |
+| Tech | VNG, Grab, Gojek | dbt + Snowflake/BigQuery |
+| Outsource/Consulting | Infinite Lambda, Holistics, NAB (VN) | dbt + various DW |
+
+### JD mẫu — Middle Analytics/BI Engineer
+
+```
+(Ref: Infinite Lambda Vietnam, Holistics)
+
+Yêu cầu:
+- 2+ năm kinh nghiệm với dbt + SQL
+- Cloud data warehouse (Redshift/BigQuery/Snowflake)
+- Data modeling: Kimball dimensional modeling
+- CI/CD: Git, GitHub Actions / GitLab CI
+- Testing: dbt tests, data quality frameworks
+- Nice-to-have: Airflow, Python, LookML
+
+Mô tả:
+- Design & build automated analytics pipelines
+- Model, transform, test, document data using dbt
+- Collaborate with engineers and client teams
+- Performance optimization on cloud DW
+- CI/CD pipeline maintenance
+
+Lương: 25-50 triệu (tùy level + company)
+Remote: Nhiều positions hybrid/full-remote
+```
+
+### Hiring Trends
+
+| Trend | Impact |
+|---|---|
+| dbt adoption tăng mạnh (banking + fintech) | dbt cert = instant interview |
+| Remote work từ VN cho global companies | Higher salary range (USD-based) |
+| Infinite Lambda, Indicium, etc. hiring VN | Outsource AE/BI Eng growing |
+| Modern data stack standard | Snowflake/BQ + dbt + Airflow = golden combo |
+| DataOps culture | CI/CD skills differentiator |
+
+---
+
+## 11. Learning Schedule Templates
+
+> Transition sang BI Engineer cần kiên nhẫn hơn BI Developer vì scope rộng hơn. 16 tuần part-time hoặc 8 tuần full-time — đủ để có portfolio basic. Nhưng thật sự "production-ready" cần thêm 3-6 tháng on-the-job. Đừng chờ hoàn hảo mới apply — apply khi đủ foundation, rồi học tiếp trong job.
+
+### Template A: Part-time (2h/ngày) — DA/BI → BI Engineer transition
+
+**16 tuần plan**
+
+| Tuần | Focus (2h/ngày) | Weekend project |
+|---|---|---|
+| 1-2 | Git workflow: branch, PR, merge | Setup personal repo |
+| 3-4 | dbt Fundamentals course | Jaffle Shop project |
+| 5-6 | dbt testing + docs | Add tests to project |
+| 7-8 | Incremental models | Convert 3 models to incremental |
+| 9-10 | Airflow basics | Simple DAG triggering dbt |
+| 11-12 | CI/CD: GitHub Actions | Automated pipeline |
+| 13-14 | Cloud DW deep-dive (Redshift/BQ) | Query optimization lab |
+| 15-16 | Portfolio project: end-to-end pipeline | Deploy + document |
+
+### Template B: Full-time intensive (8 tuần)
+
+| Tuần | Morning (3h) | Afternoon (3h) | Output |
+|---|---|---|---|
+| 1 | SQL advanced + DW concepts | Git + terminal | Query portfolio |
+| 2 | dbt Fundamentals | Hands-on: first project | dbt cert prep |
+| 3 | dbt Advanced: incremental, macros | Build staging layer | 10 models |
+| 4 | dbt testing + packages | Quality framework | Test suite |
+| 5 | Airflow fundamentals | dbt + Airflow integration | Running DAG |
+| 6 | CI/CD: Actions + sqlfluff | Automated pipeline | Full CI/CD |
+| 7 | Cloud DW: Redshift optimization | Performance tuning | Playbook |
+| 8 | Portfolio polish + docs | Interview prep | Ready! |
+
+### Weekly tracking template
+
+```
+| Week | dbt models written | Tests added | PRs merged | Concepts mastered |
+|------|-------------------|-------------|------------|-------------------|
+| W1   | 0 (setup)         | 0           | 0          | Git, CLI          |
+| W2   | 3 staging         | 5           | 1          | dbt refs, sources |
+| W3   | 5 staging + 2 mart| 12          | 2          | Incremental       |
+| ...  | ...               | ...         | ...        | ...               |
+```
